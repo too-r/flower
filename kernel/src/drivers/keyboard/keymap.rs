@@ -1,11 +1,9 @@
+/// This module contains a list of US QWERTY key code constants, based around rows/columns on a
+/// keyboard. This is used because, for example, in a game using WASD, you're looking for the
+/// characters in that position, not those characters specifically. All non-character codes can
+/// represent the same key on any keyboard layout.
 #[allow(dead_code)] // Dead variants for completeness
 pub mod codes {
-    //! # Codes
-    //!
-    //! This module contains a list of US QWERTY key code constants, based around rows/columns on a keyboard.
-    //! This is used because, for example, in a game using WASD, you're looking for the characters in that position, not those characters specifically.
-    //! All non-character codes can represent the same key on any keyboard layout.
-
     pub const ESCAPE: u8 = code(0, 0);
     pub const F1: u8 = code(1, 0);
     pub const F2: u8 = code(2, 0);
@@ -108,7 +106,7 @@ pub mod codes {
     pub const DOWN_ARROW: u8 = code(9, 5);
     pub const RIGHT_ARROW: u8 = code(10, 5);
     pub const NUM_PAD_0: u8 = code(11, 5);
-    pub const NUM_PAD_DELETE: u8 = code(12, 5);
+    pub const NUM_PAD_PERIOD: u8 = code(12, 5);
     pub const NUM_PAD_ENTER: u8 = code(13, 5);
 
     /// Gets the Flower keycode for a key based on its row and column.
@@ -117,60 +115,88 @@ pub mod codes {
     }
 }
 
-/// Gets the US QWERTY character(s) for the given Flower keycode. The first element represents the lower-case, and the second the upper.
+/// Gets the US QWERTY character(s) for the given Flower keycode. The first element represents
+/// the lower-case, and the second the upper (or numlocked-version).
 pub fn get_us_qwerty_char(keycode: u8) -> Option<(char, char)> {
+    use self::codes::*;
     match keycode {
-        codes::KEY_1 => Some(('1', '!')),
-        codes::KEY_2 => Some(('2', '@')),
-        codes::KEY_3 => Some(('3', '#')),
-        codes::KEY_4 => Some(('4', '$')),
-        codes::KEY_5 => Some(('5', '%')),
-        codes::KEY_6 => Some(('6', '^')),
-        codes::KEY_7 => Some(('7', '&')),
-        codes::KEY_8 => Some(('8', '*')),
-        codes::KEY_9 => Some(('9', '(')),
-        codes::KEY_0 => Some(('0', ')')),
-        codes::MINUS => Some(('-', '_')),
-        codes::EQUALS => Some(('=', '+')),
-        codes::BACKSPACE => Some(('\x08', '\x08')),
-        codes::TAB => Some(('\t', '\t')),
-        codes::Q => Some(('q', 'Q')),
-        codes::W => Some(('w', 'W')),
-        codes::E => Some(('e', 'E')),
-        codes::R => Some(('r', 'R')),
-        codes::T => Some(('t', 'T')),
-        codes::Y => Some(('y', 'Y')),
-        codes::U => Some(('u', 'U')),
-        codes::I => Some(('i', 'I')),
-        codes::O => Some(('o', 'O')),
-        codes::P => Some(('p', 'P')),
-        codes::SQUARE_BRACKET_OPEN => Some(('[', '{')),
-        codes::SQUARE_BRACKET_CLOSE => Some((']', '}')),
-        codes::ENTER => Some(('\n', '\n')),
-        codes::A => Some(('a', 'A')),
-        codes::S => Some(('s', 'S')),
-        codes::D => Some(('d', 'D')),
-        codes::F => Some(('f', 'F')),
-        codes::G => Some(('g', 'G')),
-        codes::H => Some(('h', 'H')),
-        codes::J => Some(('j', 'J')),
-        codes::K => Some(('k', 'K')),
-        codes::L => Some(('l', 'L')),
-        codes::SEMI_COLON => Some((';', ':')),
-        codes::SINGLE_QUOTE => Some(('\'', '\"')),
-        codes::BACK_TICK => Some(('`', '~')),
-        codes::BACK_SLASH => Some(('\\', '|')),
-        codes::Z => Some(('z', 'Z')),
-        codes::X => Some(('x', 'X')),
-        codes::C => Some(('c', 'C')),
-        codes::V => Some(('v', 'V')),
-        codes::B => Some(('b', 'B')),
-        codes::N => Some(('n', 'N')),
-        codes::M => Some(('m', 'M')),
-        codes::COMMA => Some((',', '<')),
-        codes::PERIOD => Some(('.', '>')),
-        codes::FORWARD_SLASH => Some(('/', '?')),
-        codes::SPACE => Some((' ', ' ')),
+        BACK_TICK => Some(('`', '~')),
+        KEY_1 => Some(('1', '!')),
+        KEY_2 => Some(('2', '@')),
+        KEY_3 => Some(('3', '#')),
+        KEY_4 => Some(('4', '$')),
+        KEY_5 => Some(('5', '%')),
+        KEY_6 => Some(('6', '^')),
+        KEY_7 => Some(('7', '&')),
+        KEY_8 => Some(('8', '*')),
+        KEY_9 => Some(('9', '(')),
+        KEY_0 => Some(('0', ')')),
+        MINUS => Some(('-', '_')),
+        EQUALS => Some(('=', '+')),
+        BACKSPACE => Some(('\x08', '\x08')),
+
+        TAB => Some(('\t', '\t')),
+        Q => Some(('q', 'Q')),
+        W => Some(('w', 'W')),
+        E => Some(('e', 'E')),
+        R => Some(('r', 'R')),
+        T => Some(('t', 'T')),
+        Y => Some(('y', 'Y')),
+        U => Some(('u', 'U')),
+        I => Some(('i', 'I')),
+        O => Some(('o', 'O')),
+        P => Some(('p', 'P')),
+        SQUARE_BRACKET_OPEN => Some(('[', '{')),
+        SQUARE_BRACKET_CLOSE => Some((']', '}')),
+        ENTER => Some(('\n', '\n')),
+
+        A => Some(('a', 'A')),
+        S => Some(('s', 'S')),
+        D => Some(('d', 'D')),
+        F => Some(('f', 'F')),
+        G => Some(('g', 'G')),
+        H => Some(('h', 'H')),
+        J => Some(('j', 'J')),
+        K => Some(('k', 'K')),
+        L => Some(('l', 'L')),
+        SEMI_COLON => Some((';', ':')),
+        SINGLE_QUOTE => Some(('\'', '\"')),
+        BACK_SLASH => Some(('\\', '|')),
+
+        Z => Some(('z', 'Z')),
+        X => Some(('x', 'X')),
+        C => Some(('c', 'C')),
+        V => Some(('v', 'V')),
+        B => Some(('b', 'B')),
+        N => Some(('n', 'N')),
+        M => Some(('m', 'M')),
+        COMMA => Some((',', '<')),
+        PERIOD => Some(('.', '>')),
+        FORWARD_SLASH => Some(('/', '?')),
+
+        SPACE => Some((' ', ' ')),
+
+        NUM_PAD_FORWARD_SLASH => Some(('/', '/')),
+        NUM_PAD_ASTERISK => Some(('*', '*')),
+        NUM_PAD_MINUS => Some(('-', '-')),
+
+        NUM_PAD_7 => Some(('7', '7')), // TODO numlock => off -- no printable repr
+        NUM_PAD_8 => Some(('8', '8')),
+        NUM_PAD_9 => Some(('9', '9')),
+
+        NUM_PAD_4 => Some(('4', '4')),
+        NUM_PAD_5 => Some(('5', '5')),
+        NUM_PAD_6 => Some(('6', '6')),
+        NUM_PAD_PLUS => Some(('+', '+')),
+
+        NUM_PAD_1 => Some(('1', '1')),
+        NUM_PAD_2 => Some(('2', '2')),
+        NUM_PAD_3 => Some(('3', '3')),
+        NUM_PAD_ENTER => Some(('\n', '\n')),
+
+        NUM_PAD_0 => Some(('0', '0')),
+        NUM_PAD_PERIOD => Some(('.', '.')),
+
         _ => None,
     }
 }
@@ -248,7 +274,7 @@ pub fn get_code_ps2_set_2(scancode: u8) -> Option<u8> {
         0x6B => Some(codes::NUM_PAD_4),
         0x6C => Some(codes::NUM_PAD_7),
         0x70 => Some(codes::NUM_PAD_0),
-        0x71 => Some(codes::NUM_PAD_DELETE),
+        0x71 => Some(codes::NUM_PAD_PERIOD),
         0x72 => Some(codes::NUM_PAD_2),
         0x73 => Some(codes::NUM_PAD_5),
         0x74 => Some(codes::NUM_PAD_6),
