@@ -7,7 +7,9 @@
 #![feature(unique)]
 #![feature(slice_rotate)]
 #![feature(try_from)]
+#![feature(try_trait)]
 #![feature(type_ascription)]
+#![feature(use_nested_groups)]
 
 extern crate rlibc;
 extern crate volatile;
@@ -16,9 +18,6 @@ extern crate x86_64;
 
 #[macro_use]
 extern crate bitflags;
-
-#[macro_use]
-extern crate lazy_static;
 
 mod lang;
 #[macro_use]
@@ -70,27 +69,32 @@ pub extern fn kmain() -> ! {
         Err(error) => println!("ps2c: threw error: {:?}", error),
     }
 
-    let keyboard_device = controller.device(ps2::DevicePort::Keyboard);
-    let mut keyboard = Ps2Keyboard::new(keyboard_device);
-    if let Ok(_) = keyboard.enable() {
-        println!("kbd: successfully enabled");
-        loop {
-            if let Ok(Some(event)) = keyboard.read_event() {
-                if event.event_type != KeyEventType::Break {
-                    if let Some(char) = event.char {
-                        print!("{}", char);
+    if let Some(keyboard) = controller.keyboard() {
+        let mut keyboard = Ps2Keyboard::new(keyboard);
+
+        if let Ok(_) = keyboard.enable() {
+            println!("kbd: successfully enabled");
+            loop {
+                if let Ok(Some(event)) = keyboard.read_event() {
+                    if event.event_type != KeyEventType::Break {
+                        if let Some(char) = event.char {
+                            print!("{}", char);
+                        }
                     }
                 }
             }
+        } else {
+            println!("kbd: enable unsuccessful");
         }
     } else {
-        println!("kbd: enable unsuccessful");
+        println!("kbd: not available");
     }
 
     halt()
 }
 
 // TODO move somewhere else
+/// Halts the processor
 fn halt() -> ! {
     unsafe { asm!("hlt") }
     loop {} // Required to trick rust

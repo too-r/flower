@@ -289,7 +289,7 @@ pub fn stdout_print(args: fmt::Arguments) {
 }
 
 /// Struct to show that the color code was out of bounds for [TryFrom] for [Color]
-pub struct ColorCodeOutOfBounds(u8);
+pub struct ColorCodeOutOfBounds(pub u8);
 
 impl TryFrom<u8> for Color {
     /// The only type of error is out of bounds
